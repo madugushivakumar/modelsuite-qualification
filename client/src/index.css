@@ -4,49 +4,101 @@
 /* ─────────────────────────────────────────
    Tailwind v4 Theme — ModelSuite Talents Design System V2
 ───────────────────────────────────────── */
+
+:root{
+  --bg:#050505;
+  --surface:#0D0D0D;
+  --card:#151515;
+
+  --text:#F0F0F0;
+  --muted:#6B7280;
+
+  --border:rgba(255,255,255,.08);
+
+  --primary:#3B82F6;
+}
+
 @theme inline {
-  --color-primary:       #3B82F6;
-  --color-primary-dark:  #2563EB;
-  --color-secondary:     #6B7280;
-  --color-bg-dark:       #050505;
-  --color-bg-surface:    #0D0D0D;
-  --color-bg-card:       #0D0D0D;
-  --color-bg-input:      rgba(255, 255, 255, 0.05);
-  --color-bg-hover:      rgba(255, 255, 255, 0.04);
-  --color-border:        rgba(255, 255, 255, 0.07);
-  --color-border-light:  rgba(255, 255, 255, 0.15);
-  --color-text-primary:  #F0F0F0;
-  --color-text-muted:    #6B7280;
-  --color-text-faint:    rgba(255, 255, 255, 0.35);
-  --color-success:       #10B981;
-  --color-danger:        #EF4444;
-  --color-warning:       #F59E0B;
-  --color-info:          #3B82F6;
+  --color-primary:#3B82F6;
+  --color-primary-dark:#2563EB;
 
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Poppins', sans-serif;
+  --color-secondary:#6B7280;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --color-bg-dark:#050505;
+  --color-bg-surface:#0D0D0D;
+  --color-bg-card:#151515;
+
+  --color-bg-input:rgba(255,255,255,.05);
+  --color-bg-hover:rgba(255,255,255,.04);
+
+  --color-border:rgba(255,255,255,.07);
+  --color-border-light:rgba(255,255,255,.15);
+
+  --color-text-primary:#F0F0F0;
+  --color-text-muted:#6B7280;
+  --color-text-faint:rgba(255,255,255,.35);
+
+  --color-success:#10B981;
+  --color-danger:#EF4444;
+  --color-warning:#F59E0B;
+  --color-info:#3B82F6;
+
+  --font-sans:'Inter', sans-serif;
+  --font-display:'Poppins', sans-serif;
+
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:12px;
+  --radius-xl:16px;
 }
 
 /* ─────────────────────────────────────────
    Base
 ───────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
 
-body {
-  font-family: 'Inter', 'Poppins', sans-serif;
-  background: #050505;
-  color: #F0F0F0;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+*, *::before, *::after{
+  box-sizing:border-box;
 }
 
+body{
+  font-family:'Inter','Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  margin:0;
+  padding:0;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Dark Theme */
+
+:root[data-theme="dark"]{
+  --bg:#050505;
+  --surface:#0D0D0D;
+  --card:#151515;
+
+  --text:#F0F0F0;
+  --muted:#6B7280;
+
+  --border:rgba(255,255,255,.08);
+
+  --primary:#3B82F6;
+}
+
+/* Light Theme */
+
+:root[data-theme="light"]{
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --card:#FFFFFF;
+
+  --text:#111827;
+  --muted:#6B7280;
+
+  --border:#E5E7EB;
+
+  --primary:#2563EB;
+}
 /* ─────────────────────────────────────────
    Custom Scrollbar
 ───────────────────────────────────────── */
@@ -178,7 +230,7 @@ body {
   border-radius: 8px;
   border: none;
   background: transparent;
-  color: #6B7280;
+  color: var(--muted);
   font-size: 13.5px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
@@ -338,7 +390,7 @@ body {
 .status-badge-Open      { background: rgba(255,255,255,0.07);  color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12); }
 .status-badge-Claimed   { background: rgba(245,158,11,0.12);   color: #F59E0B; border: 1px solid rgba(245,158,11,0.3); }
 .status-badge-Submitted { background: rgba(59,130,246,0.12);   color: #60A5FA; border: 1px solid rgba(59,130,246,0.3); }
-.status-badge-Approved  { background: rgba(16,185,129,0.12);   color: #34D399; border: 1px solid rgba(16,185,129,0.3); }
+.status-badge-Completed  { background: rgba(16,185,129,0.12);   color: #34D399; border: 1px solid rgba(16,185,129,0.3); }
 .status-badge-Rejected  { background: rgba(239,68,68,0.12);    color: #F87171; border: 1px solid rgba(239,68,68,0.3); }
 
 /* ─────────────────────────────────────────
@@ -403,7 +455,7 @@ body {
    Gradient text
 ───────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #ffffff 30%, #6B7280 100%);
+  background: linear-gradient(135deg, #ffffff 30%, var(--muted), 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -464,16 +516,24 @@ input, select, textarea {
 .logout-btn {
   background: transparent;
   border: none;
-  color: #4B5563;
+  color:var(--muted);
   cursor: pointer;
-  padding: 6px;
-  border-radius: 7px;
+  padding: 8px 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: color 0.15s ease-out, background 0.15s ease-out;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
+
 .logout-btn:hover {
   color: #EF4444;
-  background: rgba(239,68,68,0.1);
+  background: rgba(239,68,68,0.12);
+}
+
+.logout-btn svg {
+  width: 16px;
+  height: 16px;
 }

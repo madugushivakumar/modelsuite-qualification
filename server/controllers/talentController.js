@@ -1,4 +1,5 @@
 ﻿const Task = require('../models/Task');
+const mongoose = require("mongoose");
 
 // @desc  Get all available (Open) tasks
 // @route GET /api/talent/tasks/available
@@ -36,6 +37,11 @@ const getMyTasks = async (req, res) => {
 // @access Talent
 const claimTask = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+  return res.status(400).json({
+    message: "Invalid Task ID",
+  });
+}
     // Two talents can both pass the status === 'Open' check before either saves,
     // then both write Claimed. Proper fix: findOneAndUpdate({ _id, status: 'Open' })
     const task = await Task.findById(req.params.id);

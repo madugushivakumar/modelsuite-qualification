@@ -1,64 +1,116 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from "../../context/ThemeContext";
 
 /* ── Clean SVG line-art icons ── */
 const IconDashboard = () => (
-  <svg className="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="2" width="7" height="7" rx="1.5"/>
-    <rect x="11" y="2" width="7" height="7" rx="1.5"/>
-    <rect x="2" y="11" width="7" height="7" rx="1.5"/>
-    <rect x="11" y="11" width="7" height="7" rx="1.5"/>
+  <svg
+    className="nav-icon"
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="2" y="2" width="7" height="7" rx="1.5" />
+    <rect x="11" y="2" width="7" height="7" rx="1.5" />
+    <rect x="2" y="11" width="7" height="7" rx="1.5" />
+    <rect x="11" y="11" width="7" height="7" rx="1.5" />
   </svg>
 );
 
 const IconTasks = () => (
-  <svg className="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 10l2 2 4-4"/>
-    <rect x="3" y="3" width="14" height="14" rx="2"/>
+  <svg
+    className="nav-icon"
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M7 10l2 2 4-4" />
+    <rect x="3" y="3" width="14" height="14" rx="2" />
   </svg>
 );
 
 const IconLogout = () => (
-  <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M13 10H3M13 10l-3-3M13 10l-3 3"/>
-    <path d="M7 4H4a1 1 0 00-1 1v10a1 1 0 001 1h3"/>
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M13 10H3M13 10l-3-3M13 10l-3 3" />
+    <path d="M7 4H4a1 1 0 00-1 1v10a1 1 0 001 1h3" />
   </svg>
 );
 
 const navItems = [
   { label: 'My Dashboard', path: '/talent/dashboard', Icon: IconDashboard },
-  { label: 'My Tasks',     path: '/talent/tasks',     Icon: IconTasks     },
+  { label: 'My Tasks', path: '/talent/tasks', Icon: IconTasks },
 ];
 
 const TalentSidebar = () => {
   const { user, logout } = useAuth();
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const { theme, toggleTheme } = useTheme();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-[220px] flex flex-col z-50"
-      style={{ background: '#0D0D0D' }}>
-
+    <aside
+      className="fixed inset-y-0 left-0 w-[220px] flex flex-col z-50"
+      style={{
+        background: "var(--surface)",
+        borderRight: "1px solid var(--border)",
+      }}
+    >
       {/* Brand */}
-      <div className="flex items-center justify-center px-5 py-6">
-        <img src="/modelsuite-talents.png" alt="ModelSuite Talents" className="w-36 h-auto object-contain" />
+      <div className="flex flex-col items-center px-5 py-6 gap-4">
+        <img
+          src="/modelsuite-talents.png"
+          alt="ModelSuite Talents"
+          className="w-36 h-auto object-contain"
+        />
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="logout-btn flex items-center justify-center gap-2 w-full py-2.5"
+        >
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
       </div>
 
       <div className="sidebar-divider mx-4" />
 
       {/* Nav */}
       <nav className="flex flex-col gap-0.5 flex-1 px-3 pt-5">
-        <p className="text-[9.5px] font-semibold uppercase tracking-[0.12em] px-2 mb-2"
-          style={{ color: 'rgba(255,255,255,0.25)', fontFamily: 'Inter, sans-serif' }}>
+        <p
+          className="text-[9.5px] font-semibold uppercase tracking-[0.12em] px-2 mb-2"
+          style={{
+            color: "var(--muted)",
+            fontFamily: "Inter, sans-serif",
+          }}
+        >
           Menu
         </p>
 
         {navItems.map(({ label, path, Icon }) => {
           const isActive = location.pathname === path;
+
           return (
-            <button key={path}
+            <button
+              key={path}
               onClick={() => navigate(path)}
-              className={`nav-item ${isActive ? 'nav-active' : ''}`}>
+              className={`nav-item ${isActive ? "nav-active" : ""}`}
+            >
               <Icon />
               <span>{label}</span>
             </button>
@@ -69,25 +121,42 @@ const TalentSidebar = () => {
       {/* Footer */}
       <div className="px-3 pb-5">
         <div className="sidebar-divider mb-4" />
+
         <div className="flex items-center justify-between gap-2 px-1">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-full avatar-talent flex items-center justify-center text-[12px] font-bold text-white shrink-0">
-              {user?.name?.[0]?.toUpperCase() ?? 'T'}
+              {user?.name?.[0]?.toUpperCase() ?? "T"}
             </div>
+
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold truncate max-w-[100px]"
-                style={{ color: '#E5E2E1', fontFamily: 'Inter, sans-serif' }}>
+              <p
+                className="text-[13px] font-semibold truncate max-w-[100px]"
+                style={{
+                  color: "var(--text)",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
                 {user?.name}
               </p>
-              <p className="text-[11px]" style={{ color: '#4B5563' }}>Talent</p>
+
+              <p
+                className="text-[11px]"
+                style={{ color: "var(--muted)" }}
+              >
+                Talent
+              </p>
             </div>
           </div>
 
           <button
-            onClick={() => { logout(); navigate('/login'); }}
-            title="Sign out"
-            className="logout-btn">
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
+            className="logout-btn flex items-center gap-2 px-3 py-2"
+          >
             <IconLogout />
+            <span>Logout</span>
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 ﻿const Submission = require('../models/Submission');
 const Task = require('../models/Task');
-
+const mongoose = require("mongoose");
 // @desc  Submit a task with a file upload
 // @route POST /api/submissions/:taskId
 // @access Talent (protect middleware only — no role check)
@@ -8,6 +8,11 @@ const submitTask = async (req, res) => {
   const { taskId } = req.params;
   const { notes } = req.body;
 
+  if (!mongoose.Types.ObjectId.isValid(taskId)) {
+  return res.status(400).json({
+    message: "Invalid Task ID",
+  });
+}
   try {
     // — any authenticated user can submit for any task
     // — a talent can "submit" an Open or Approved task
@@ -46,18 +51,42 @@ const submitTask = async (req, res) => {
 // @desc  Get submission for a specific task (admin use)
 // @route GET /api/submissions/:taskId
 // @access Protect only — no admin guard
+// @desc  Get submission for a task
+// @route GET /api/submissions/:taskId
+// @access Admin / Talent
 const getSubmission = async (req, res) => {
   try {
-    const submission = await Submission.findOne({ taskId: req.params.taskId })
-      .populate('talentId', 'name email');
+    if (!mongoose.Types.ObjectId.isValid(req.params.taskId)) {
+  return res.status(400).json({
+    message: "Invalid Task ID",
+  });
+}
+    let submission;
+
+    // Admin can view every submission
+    if (req.user.role === "Admin") {
+      submission = await Submission.findOne({
+        taskId: req.params.taskId,
+      }).populate("talentId", "name email");
+    } else {
+      // Talent can view only their own submission
+      submission = await Submission.findOne({
+        taskId: req.params.taskId,
+        talentId: req.user._id,
+      }).populate("talentId", "name email");
+    }
 
     if (!submission) {
-      return res.status(404).json({ message: 'No submission found for this task' });
+      return res.status(404).json({
+        message: "Submission not found or access denied",
+      });
     }
 
     res.json(submission);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
@@ -84,24 +113,51 @@ const reviewSubmission = async (req, res) => {
   const { reviewStatus } = req.body;
 
   try {
-    // — any string is accepted and stored
-    const submission = await Submission.findByIdAndUpdate(
-      req.params.id,
-      { reviewStatus },
-      { new: true }
-    )
-      .populate('taskId', 'title status')
-      .populate('talentId', 'name email');
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+  return res.status(400).json({
+    message: "Invalid Submission ID",
+  });
+}
+    // Validate review status
+    if (!["Approved", "Rejected"].includes(reviewStatus)) {
+      return res.status(400).json({
+        message: "Invalid review status",
+      });
+    }
+
+    const submission = await Submission.findById(req.params.id);
 
     if (!submission) {
-      return res.status(404).json({ message: 'Submission not found' });
+      return res.status(404).json({
+        message: "Submission not found",
+      });
     }
-    // — task stays 'Submitted' even after the submission is Approved/Rejected
-    // Proper flow: also update Task.status to 'Approved'/'Rejected'
 
-    res.json(submission);
+    // Update submission status
+    submission.reviewStatus = reviewStatus;
+    await submission.save();
+
+    // Update parent task status
+    if (reviewStatus === "Approved") {
+      await Task.findByIdAndUpdate(submission.taskId, {
+        status: "Completed",
+      });
+    } else {
+      await Task.findByIdAndUpdate(submission.taskId, {
+        status: "Rejected",
+      });
+    }
+
+    const updatedSubmission = await Submission.findById(submission._id)
+      .populate("taskId", "title status")
+      .populate("talentId", "name email");
+
+    res.json(updatedSubmission);
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 

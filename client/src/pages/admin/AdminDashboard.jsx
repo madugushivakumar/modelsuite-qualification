@@ -22,35 +22,47 @@ const IconPlus = () => (
 
 const AdminDashboard = () => {
   const [tasks, setTasks]           = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+const [totalPages, setTotalPages] = useState(1);
   const [showCreate, setShowCreate] = useState(false);
   const [editTask, setEditTask]     = useState(null);
   const [search, setSearch]         = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  const loadTasks = async () => {
-    try {
-      const { data } = await fetchAllTasks();
-      setTasks(data);
-    } catch {
-      alert('Failed to load tasks');
-    }
-  };
+ const loadTasks = async (page = 1) => {
+  try {
+    const { data } = await fetchAllTasks(page);
+
+    setTasks(data.tasks);
+    setCurrentPage(data.currentPage);
+    setTotalPages(data.totalPages);
+
+  } catch {
+    alert("Failed to load tasks");
+  }
+};
 
   // eslint-disable-next-line
-  useEffect(() => { loadTasks(); }, []);
+ useEffect(() => {
+  loadTasks(currentPage);
+}, [currentPage]);
 
-  const stats = {
-    total:     tasks.length,
-    open:      tasks.filter((t) => t.status === 'Open').length,
-    submitted: tasks.filter((t) => t.status === 'Submitted').length,
-    approved:  tasks.filter((t) => t.status === 'Approved').length,
-  };
-
+const stats = {
+  total: tasks.length,
+  open: tasks.filter((t) => t.status === "Open").length,
+  submitted: tasks.filter((t) => t.status === "Submitted").length,
+  completed: tasks.filter((t) => t.status === "Completed").length,
+};
   const statCards = [
     { label: 'Total Tasks', value: stats.total,     colorClass: 'stat-card-default', valueColor: '#E5E2E1' },
     { label: 'Open',        value: stats.open,      colorClass: 'stat-card-blue',    valueColor: '#60A5FA' },
     { label: 'Submitted',   value: stats.submitted, colorClass: 'stat-card-info',    valueColor: '#60A5FA' },
-    { label: 'Approved',    value: stats.approved,  colorClass: 'stat-card-green',   valueColor: '#34D399' },
+   {
+  label: "Completed",
+  value: stats.completed,
+  colorClass: "stat-card-green",
+  valueColor: "#34D399",
+},
   ];
 
   /* Filter tasks */
@@ -63,7 +75,7 @@ const AdminDashboard = () => {
   });
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#050505' }}>
+    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar />
 
       <main className="ml-[240px] flex-1 px-8 py-8" style={{ maxWidth: 'calc(100vw - 240px)' }}>
@@ -150,24 +162,79 @@ const AdminDashboard = () => {
                 <option value="Open">Open</option>
                 <option value="Claimed">Claimed</option>
                 <option value="Submitted">Submitted</option>
-                <option value="Approved">Approved</option>
+                <option value="Completed">Completed</option>
                 <option value="Rejected">Rejected</option>
               </select>
             </div>
           </div>
 
-          <TasksTable tasks={filteredTasks} onEdit={setEditTask} onRefresh={loadTasks} />
+         <TasksTable
+  tasks={filteredTasks}
+  onEdit={setEditTask}
+  onRefresh={() => loadTasks(currentPage)}
+/>
+
+{/* Pagination */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "15px",
+    marginTop: "20px",
+    paddingBottom: "20px",
+  }}
+>
+  <button
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => prev - 1)}
+    className="btn-gradient px-4 py-2 rounded"
+    style={{
+      opacity: currentPage === 1 ? 0.5 : 1,
+      cursor: currentPage === 1 ? "not-allowed" : "pointer",
+    }}
+  >
+    Previous
+  </button>
+
+  <span
+    style={{
+      color: "#E5E2E1",
+      fontWeight: "600",
+    }}
+  >
+    Page {currentPage} of {totalPages}
+  </span>
+
+  <button
+    disabled={currentPage === totalPages}
+    onClick={() => setCurrentPage((prev) => prev + 1)}
+    className="btn-gradient px-4 py-2 rounded"
+    style={{
+      opacity: currentPage === totalPages ? 0.5 : 1,
+      cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+    }}
+  >
+    Next
+  </button>
+</div>
         </div>
       </main>
 
       {showCreate && (
-        <CreateTaskModal onClose={() => setShowCreate(false)} onCreated={loadTasks} />
+    <CreateTaskModal
+    onClose={() => setShowCreate(false)}
+    onCreated={() => loadTasks(currentPage)}
+/>
       )}
       {editTask && (
         <EditTaskModal
           task={editTask}
           onClose={() => setEditTask(null)}
-          onUpdated={() => { loadTasks(); setEditTask(null); }}
+onUpdated={() => {
+    loadTasks(currentPage);
+    setEditTask(null);
+}}
         />
       )}
     </div>

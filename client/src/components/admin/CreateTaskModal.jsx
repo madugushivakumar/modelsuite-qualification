@@ -1,7 +1,12 @@
-﻿import { useState } from 'react';
-import { createTask, fetchTalents } from '../../api/tasks';
-
-const STATUS_OPTIONS = ['Open', 'Claimed', 'Submitted', 'Approved', 'Rejected'];
+﻿import { createTask, fetchTalents } from '../../api/tasks';
+import { useState, useEffect } from 'react';
+const STATUS_OPTIONS = [
+  'Open',
+  'Claimed',
+  'Submitted',
+  'Completed',
+  'Rejected'
+];
 
 const inputCls  = 'w-full bg-bg-input border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary outline-none placeholder:text-[#4e4a6e] focus:border-primary focus:ring-[3px] focus:ring-primary/15 transition-all font-sans resize-y';
 const labelCls  = 'text-[11px] font-semibold uppercase tracking-[0.5px] text-text-muted';
@@ -10,7 +15,7 @@ const CreateTaskModal = ({ onClose, onCreated }) => {
   const [form, setForm] = useState({ title: '', description: '', status: 'Open', assignedTo: '', dueDate: '' });
   const [talents, setTalents] = useState([]);
   const [loadingTalents, setLoadingTalents] = useState(false);
-  useState(() => {
+ useEffect(() => {
     setLoadingTalents(true);
     fetchTalents()
       .then(({ data }) => setTalents(data))
