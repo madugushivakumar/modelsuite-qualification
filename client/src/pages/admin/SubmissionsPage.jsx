@@ -22,7 +22,7 @@ const SubmissionsPage = () => {
     }
   };
 
-  // eslint-disable-next-line
+  
   useEffect(() => { loadSubmissions(); }, []);
   const pending  = submissions.filter((s) => s.reviewStatus === 'Pending').length;
   const approved = submissions.filter((s) => s.reviewStatus === 'Approved').length;

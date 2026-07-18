@@ -1,5 +1,5 @@
 ﻿import { claimTask } from '../../api/talent';
-
+import PropTypes from "prop-types";
 const STATUS_CLASS = {
   Open: 'status-badge-Open',
   Claimed: 'status-badge-Claimed',
@@ -57,5 +57,19 @@ const TaskCard = ({ task, showClaimButton = false, onClaimed }) => {
     </div>
   );
 };
-
+TaskCard.propTypes = {
+  task: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    status: PropTypes.string,
+    dueDate: PropTypes.string,
+    createdBy: PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+    }),
+  }).isRequired,
+  showClaimButton: PropTypes.bool,
+  onClaimed: PropTypes.func,
+};
 export default TaskCard;

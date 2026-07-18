@@ -1,5 +1,6 @@
 ﻿import { createTask, fetchTalents } from '../../api/tasks';
 import { useState, useEffect } from 'react';
+import PropTypes from "prop-types";
 const STATUS_OPTIONS = [
   'Open',
   'Claimed',
@@ -14,14 +15,14 @@ const labelCls  = 'text-[11px] font-semibold uppercase tracking-[0.5px] text-tex
 const CreateTaskModal = ({ onClose, onCreated }) => {
   const [form, setForm] = useState({ title: '', description: '', status: 'Open', assignedTo: '', dueDate: '' });
   const [talents, setTalents] = useState([]);
-  const [loadingTalents, setLoadingTalents] = useState(false);
- useEffect(() => {
-    setLoadingTalents(true);
-    fetchTalents()
-      .then(({ data }) => setTalents(data))
-      .catch(() => alert('Failed to load talents'))
-      .finally(() => setLoadingTalents(false));
-  }, []);
+ const [loadingTalents, setLoadingTalents] = useState(true);
+
+useEffect(() => {
+  fetchTalents()
+    .then(({ data }) => setTalents(data))
+    .catch(() => alert("Failed to load talents"))
+    .finally(() => setLoadingTalents(false));
+}, []);
 
   const handleChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -105,5 +106,8 @@ const CreateTaskModal = ({ onClose, onCreated }) => {
     </div>
   );
 };
-
+CreateTaskModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onCreated: PropTypes.func.isRequired,
+};
 export default CreateTaskModal;

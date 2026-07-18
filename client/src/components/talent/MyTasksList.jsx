@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SubmitTaskModal from './SubmitTaskModal';
-
+import PropTypes from "prop-types";
 /* ── Status badge classes ── */
 const STATUS_CLASS = {
   Open: 'status-badge-Open',
@@ -138,5 +138,15 @@ onMouseLeave={(e) => {
     </>
   );
 };
-
+MyTasksList.propTypes = {
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      status: PropTypes.string,
+      dueDate: PropTypes.string,
+    })
+  ),
+  onRefresh: PropTypes.func,
+};
 export default MyTasksList;

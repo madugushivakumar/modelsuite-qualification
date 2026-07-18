@@ -1,21 +1,20 @@
-﻿import { createContext, useContext, useState } from 'react';
-
-const AuthContext = createContext(null);
+﻿import { useState } from "react";
+import PropTypes from "prop-types";
+import { AuthContext } from "./AuthContextObject";
 
 export const AuthProvider = ({ children }) => {
-  // — if token is expired, user stays "logged in" until a request fails
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('user');
+    const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
 
   const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
     setUser(null);
   };
 
@@ -26,4 +25,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};

@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { updateTask, fetchTalents } from '../../api/tasks';
-
+import PropTypes from "prop-types";
 const STATUS_OPTIONS = [
   'Open',
   'Claimed',
@@ -99,5 +99,20 @@ const EditTaskModal = ({ task, onClose, onUpdated }) => {
     </div>
   );
 };
-
+EditTaskModal.propTypes = {
+  task: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    status: PropTypes.string,
+    dueDate: PropTypes.string,
+    assignedTo: PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+      email: PropTypes.string,
+    }),
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onUpdated: PropTypes.func.isRequired,
+};
 export default EditTaskModal;

@@ -1,5 +1,5 @@
 ﻿import TaskCard from './TaskCard';
-
+import PropTypes from "prop-types";
 const AvailableTasksList = ({ tasks, onClaimed }) => {
   if (!tasks || tasks.length === 0) {
     return (
@@ -17,5 +17,26 @@ const AvailableTasksList = ({ tasks, onClaimed }) => {
     </div>
   );
 };
-
+AvailableTasksList.propTypes = {
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      status: PropTypes.string,
+      dueDate: PropTypes.string,
+      createdAt: PropTypes.string,
+      assignedTo: PropTypes.shape({
+        _id: PropTypes.string,
+        name: PropTypes.string,
+        email: PropTypes.string,
+      }),
+      createdBy: PropTypes.shape({
+        _id: PropTypes.string,
+        name: PropTypes.string,
+      }),
+    })
+  ),
+  onClaimed: PropTypes.func.isRequired,
+};
 export default AvailableTasksList;

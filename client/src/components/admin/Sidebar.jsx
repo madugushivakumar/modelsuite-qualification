@@ -1,6 +1,7 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from "../../context/ThemeContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/useAuth";
+import { useTheme } from "../../context/useTheme";
+
 
 /* ── Clean SVG line-art icons (no emojis, no AI icons) ── */
 

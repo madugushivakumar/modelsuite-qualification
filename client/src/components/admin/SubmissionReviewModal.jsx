@@ -1,5 +1,5 @@
 ﻿import { reviewSubmission } from '../../api/submissions';
-
+import PropTypes from "prop-types";
 const REVIEW_STATUS_CLASS = {
   Pending:  'status-badge-Submitted',
   Approved: 'status-badge-Approved',
@@ -119,5 +119,23 @@ const SubmissionReviewModal = ({ submission, onClose, onReviewed }) => {
     </div>
   );
 };
-
+SubmissionReviewModal.propTypes = {
+  submission: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    reviewStatus: PropTypes.string,
+    notes: PropTypes.string,
+    fileUrl: PropTypes.string,
+    taskId: PropTypes.shape({
+      title: PropTypes.string,
+      dueDate: PropTypes.string,
+      status: PropTypes.string,
+    }),
+    talentId: PropTypes.shape({
+      name: PropTypes.string,
+      email: PropTypes.string,
+    }),
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onReviewed: PropTypes.func.isRequired,
+};
 export default SubmissionReviewModal;

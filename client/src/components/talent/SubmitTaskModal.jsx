@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react';
 import { submitTask } from '../../api/submissions';
-
+import PropTypes from "prop-types";
 const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
   const [file, setFile]   = useState(null);
   const [notes, setNotes] = useState('');
@@ -92,5 +92,13 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
     </div>
   );
 };
-
+SubmitTaskModal.propTypes = {
+  task: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    dueDate: PropTypes.string,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmitted: PropTypes.func.isRequired,
+};
 export default SubmitTaskModal;

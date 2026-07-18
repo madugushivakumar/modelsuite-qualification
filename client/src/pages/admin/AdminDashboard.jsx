@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import Sidebar from '../../components/admin/Sidebar';
-import TasksTable from '../../components/admin/TasksTable';
-import CreateTaskModal from '../../components/admin/CreateTaskModal';
-import EditTaskModal from '../../components/admin/EditTaskModal';
-import { fetchAllTasks } from '../../api/tasks';
-
+import { useCallback, useEffect, useState } from "react";
+import Sidebar from "../../components/admin/Sidebar";
+import TasksTable from "../../components/admin/TasksTable";
+import CreateTaskModal from "../../components/admin/CreateTaskModal";
+import EditTaskModal from "../../components/admin/EditTaskModal";
+import { fetchAllTasks } from "../../api/tasks";
 /* ── Search icon ── */
 const IconSearch = () => (
   <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -29,23 +28,22 @@ const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch]         = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
- const loadTasks = async (page = 1) => {
+ const loadTasks = useCallback(async (page = 1) => {
   try {
     const { data } = await fetchAllTasks(page);
 
     setTasks(data.tasks);
     setCurrentPage(data.currentPage);
     setTotalPages(data.totalPages);
-
   } catch {
     alert("Failed to load tasks");
   }
-};
+}, []);
 
-  // eslint-disable-next-line
- useEffect(() => {
+
+useEffect(() => {
   loadTasks(currentPage);
-}, [currentPage]);
+}, [currentPage, loadTasks]);
 
 const stats = {
   total: tasks.length,

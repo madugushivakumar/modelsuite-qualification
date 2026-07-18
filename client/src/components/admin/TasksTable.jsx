@@ -1,5 +1,5 @@
 import { deleteTask } from '../../api/tasks';
-
+import PropTypes from "prop-types";
 /* ── SVG Action Icons ── */
 const IconEdit = () => (
   <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -183,5 +183,23 @@ style={{
     </div>
   );
 };
-
+TasksTable.propTypes = {
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      status: PropTypes.string,
+      dueDate: PropTypes.string,
+      createdAt: PropTypes.string,
+      assignedTo: PropTypes.shape({
+        _id: PropTypes.string,
+        name: PropTypes.string,
+        email: PropTypes.string,
+      }),
+    })
+  ).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+};
 export default TasksTable;
